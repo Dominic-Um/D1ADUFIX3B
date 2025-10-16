@@ -33,3 +33,16 @@ setInterval(() => {
   updateDisplay();
 }, 1000);
 updateDisplay();
+
+let lt = performance.now();
+
+function animate(time: number) {
+  const dt = (time - lt) / 1000;
+  lt = time;
+  counter += dt;
+  updateDisplay();
+
+  requestAnimationFrame(animate);
+}
+requestAnimationFrame(animate);
+updateDisplay();
