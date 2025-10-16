@@ -2,11 +2,13 @@ import exampleIconUrl from "./noun-paperclip-7598668-00449F.png";
 import "./style.css";
 
 let counter: number = 0;
+let growthRate: number = 0;
 
 document.body.innerHTML = `
   <button id="iconButton">
     <img src="${exampleIconUrl}" alt="Paperclip Icon" width="100" />
   </button>
+    <button id="upgradeButton" disabled>Buy Upgrade (10 paperclips)</button>
     <div id="counterDisplay">0 paperclips</div>
 `;
 
@@ -14,12 +16,23 @@ const button = document.getElementById("iconButton") as HTMLButtonElement;
 const counterDisplay = document.getElementById(
   "counterDisplay",
 ) as HTMLDivElement;
+const upgradeButton = document.getElementById(
+  "upgradeButton",
+) as HTMLButtonElement;
 
 function updateDisplay() {
   counterDisplay.textContent = `${counter} paperclip${
     counter === 1 ? "" : "s"
   }`;
+  upgradeButton.disabled = counter < 10;
 }
+upgradeButton.addEventListener("click", () => {
+  if (counter >= 10) {
+    counter -= 10;
+    growthRate += 1;
+    updateDisplay();
+  }
+});
 
 button.addEventListener("click", () => {
   counter++;
@@ -28,18 +41,18 @@ button.addEventListener("click", () => {
   }`;
 });
 
-setInterval(() => {
-  counter++;
-  updateDisplay();
-}, 1000);
-updateDisplay();
+//setInterval(() => {
+//  counter++;
+// updateDisplay();
+//}, 1000);
+//updateDisplay();
 
 let lt = performance.now();
 
 function animate(time: number) {
   const dt = (time - lt) / 1000;
   lt = time;
-  counter += dt;
+  counter += growthRate * dt;
   updateDisplay();
 
   requestAnimationFrame(animate);
