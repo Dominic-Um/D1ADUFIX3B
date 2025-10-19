@@ -65,9 +65,6 @@ function updateDisplay() {
   growthRateDisplay.textContent = `${growthRate.toFixed(3)} paperclips/sec`;
 
   upgrades.forEach((u, i) => {
-    upgradeButtons[i].textContent = `Buy ${u.name} (${
-      u.cost.toFixed(1)
-    } paperclips)`;
     upgradeButtons[i].disabled = counter < u.cost;
     upgradeCounts[i].textContent = `Owned: ${u.count}`;
   });
@@ -84,7 +81,6 @@ upgrades.forEach((u, i) => {
       counter -= u.cost;
       u.count++;
       growthRate += u.rate;
-      u.cost *= 1.15;
       updateDisplay();
     }
   });
