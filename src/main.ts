@@ -6,15 +6,52 @@ let acceleration = 0;
 
 interface Item {
   name: string;
+  description: string;
   cost: number;
   rate: number;
   count: number;
 }
 
 const availableItems: Item[] = [
-  { name: "Alloy Wheels", cost: 10, rate: 0.1, count: 0 },
-  { name: "Turbo Tires", cost: 100, rate: 2, count: 0 },
-  { name: "Nitro Boost", cost: 1000, rate: 50, count: 0 },
+  {
+    name: "Alloy Wheels",
+    description: "Lightweight rims that reduce drag and boost your top speed.",
+    cost: 10,
+    rate: 0.1,
+    count: 0,
+  },
+  {
+    name: "Turbo Tires",
+    description:
+      "Grippy performance tires that give extra traction per second.",
+    cost: 100,
+    rate: 2,
+    count: 0,
+  },
+  {
+    name: "Nitro Boost",
+    description:
+      "Injects pure speed into your system for explosive acceleration.",
+    cost: 1000,
+    rate: 50,
+    count: 0,
+  },
+  {
+    name: "Supercharger",
+    description:
+      "Forces more air into your engine for continuous high-speed gains.",
+    cost: 5000,
+    rate: 200,
+    count: 0,
+  },
+  {
+    name: "Rocket Engine",
+    description:
+      "Replaces your motor entirely with jet propulsion—hold on tight!",
+    cost: 25000,
+    rate: 1000,
+    count: 0,
+  },
 ];
 
 document.body.innerHTML = `
@@ -34,11 +71,12 @@ document.body.innerHTML = `
   availableItems
     .map(
       (item) => `
-        <div>
+        <div class="upgrade">
           <button id="buy-${item.name.replace(/\s+/g, "")}" disabled>
             Buy ${item.name} (${item.cost.toFixed(1)} mph)
           </button>
           <span id="count-${item.name.replace(/\s+/g, "")}">Owned: 0</span>
+          <p class="description">${item.description}</p>
         </div>
       `,
     )
