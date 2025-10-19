@@ -1,8 +1,8 @@
-import exampleIconUrl from "./noun-paperclip-7598668-00449F.png";
+import wheelIconUrl from "./spinningwheel.jpg";
 import "./style.css";
 
-let counter: number = 0;
-let growthRate: number = 0;
+let speed: number = 0;
+let acceleration: number = 0;
 
 interface Upgrade {
   name: string;
@@ -12,29 +12,33 @@ interface Upgrade {
 }
 
 const upgrades: Upgrade[] = [
-  { name: "A", cost: 10, rate: 0.1, count: 0 },
-  { name: "B", cost: 100, rate: 2.0, count: 0 },
-  { name: "C", cost: 1000, rate: 50.0, count: 0 },
+  { name: "Alloy Wheels", cost: 10, rate: 0.1, count: 0 },
+  { name: "Turbo Tires", cost: 100, rate: 2.0, count: 0 },
+  { name: "Nitro Boost", cost: 1000, rate: 50.0, count: 0 },
 ];
 
 document.body.innerHTML = `
-  <button id="iconButton">
-    <img src="${exampleIconUrl}" alt="Paperclip Icon" width="100" />
+  <h1>🏁 Speed Clicker: Spin to Win 🏎️</h1>
+
+  <button id="wheelButton" class="main-button">
+    <img src="${wheelIconUrl}" alt="Spinning Wheel" width="100" />
+    <p>Spin the Wheel!</p>
   </button>
 
-  <div id="counterDisplay">0 paperclips</div>
-  <div id="growthRateDisplay">0.0 paperclips/sec</div>
+  <div id="speedDisplay">0.000 mph</div>
+  <div id="accelDisplay">0.000 mph/sec</div>
 
+  <h2>🧰 Upgrades</h2>
   <div id="upgrades">
     ${
   upgrades
     .map(
       (u) => `
         <div>
-          <button id="buy-${u.name}" disabled>
-            Buy ${u.name} (${u.cost} paperclips)
+          <button id="buy-${u.name.replace(/\s+/g, "")}" disabled>
+            Buy ${u.name} (${u.cost.toFixed(1)} mph)
           </button>
-          <span id="count-${u.name}">Owned: 0</span>
+          <span id="count-${u.name.replace(/\s+/g, "")}">Owned: 0</span>
         </div>
       `,
     )
@@ -43,44 +47,44 @@ document.body.innerHTML = `
   </div>
 `;
 
-const iconButton = document.getElementById("iconButton") as HTMLButtonElement;
-const counterDisplay = document.getElementById(
-  "counterDisplay",
-) as HTMLDivElement;
-const growthRateDisplay = document.getElementById(
-  "growthRateDisplay",
-) as HTMLDivElement;
+const wheelButton = document.getElementById("wheelButton") as HTMLButtonElement;
+const speedDisplay = document.getElementById("speedDisplay") as HTMLDivElement;
+const accelDisplay = document.getElementById("accelDisplay") as HTMLDivElement;
 
 const upgradeButtons = upgrades.map((u) =>
-  document.getElementById(`buy-${u.name}`) as HTMLButtonElement
+  document.getElementById(
+    `buy-${u.name.replace(/\s+/g, "")}`,
+  ) as HTMLButtonElement
 );
 const upgradeCounts = upgrades.map((u) =>
-  document.getElementById(`count-${u.name}`) as HTMLSpanElement
+  document.getElementById(
+    `count-${u.name.replace(/\s+/g, "")}`,
+  ) as HTMLSpanElement
 );
 
 function updateDisplay() {
-  counterDisplay.textContent = `${counter.toFixed(3)} paperclip${
-    Math.floor(counter) === 1 ? "" : "s"
-  }`;
-  growthRateDisplay.textContent = `${growthRate.toFixed(3)} paperclips/sec`;
+  speedDisplay.textContent = `${speed.toFixed(3)} mph`;
+  accelDisplay.textContent = `${acceleration.toFixed(3)} mph/sec`;
 
   upgrades.forEach((u, i) => {
-    upgradeButtons[i].disabled = counter < u.cost;
+    upgradeButtons[i].textContent = `Buy ${u.name} (${u.cost.toFixed(1)} mph)`;
+    upgradeButtons[i].disabled = speed < u.cost;
     upgradeCounts[i].textContent = `Owned: ${u.count}`;
   });
 }
 
-iconButton.addEventListener("click", () => {
-  counter++;
+wheelButton.addEventListener("click", () => {
+  speed++;
   updateDisplay();
 });
 
 upgrades.forEach((u, i) => {
   upgradeButtons[i].addEventListener("click", () => {
-    if (counter >= u.cost) {
-      counter -= u.cost;
+    if (speed >= u.cost) {
+      speed -= u.cost;
       u.count++;
-      growthRate += u.rate;
+      acceleration += u.rate;
+      u.cost *= 1.15;
       updateDisplay();
     }
   });
@@ -91,7 +95,7 @@ function animate(time: number) {
   const dt = (time - lastTime) / 1000;
   lastTime = time;
 
-  counter += growthRate * dt;
+  speed += acceleration * dt;
   updateDisplay();
 
   requestAnimationFrame(animate);
